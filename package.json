@@ -1,0 +1,25 @@
+{
+  "name": "wegodevform-be",
+  "version": "1.0.0",
+  "description": "REST API for wegodevform",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "author": "Eru",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.27.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.7.1"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.7.2"
+  }
+}
