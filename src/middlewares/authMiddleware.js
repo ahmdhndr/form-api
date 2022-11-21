@@ -8,7 +8,7 @@ const jwtAuth = () => async (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
 
     const decoded = await tokenManager.verifyAccessToken(token);
-    req.jwt = decoded;
+    req.user = decoded;
 
     next();
   } catch (error) {

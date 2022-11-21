@@ -5,6 +5,7 @@ import connectDB from './configs/db.js';
 import { errorHandler, notFoundError } from './middlewares/errorMiddleware.js';
 
 import userRouter from './routes/user.js';
+import formRouter from './routes/form.js';
 
 dotenv.config();
 const app = express();
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to API v1' });
 });
 app.use('/', userRouter);
+app.use('/', formRouter);
 
 /* Error middleware */
 app.use(notFoundError);
