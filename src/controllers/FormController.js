@@ -51,6 +51,7 @@ class FormController {
 
       return res.status(201).json({
         status: 'success',
+        message: 'FORM_CREATED',
         data: {
           addedForm: {
             _id: newForm._id,
@@ -71,12 +72,12 @@ class FormController {
 
   async showFormByIdAndUserId(req, res) {
     try {
-      const { id } = req.params;
+      const { formId } = req.params;
       const { id: owner } = req.user;
 
-      if (!mongoose.Types.ObjectId.isValid(id)) throw { code: 400, message: 'INVALID_ID' };
+      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 404, message: 'FORM_NOT_FOUND' };
 
-      const form = await Form.findOne({ _id: id, owner });
+      const form = await Form.findOne({ _id: formId, owner });
       if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
 
       return res.json({
@@ -97,16 +98,17 @@ class FormController {
 
   async updateFormByIdAndUserId(req, res) {
     try {
-      const { id } = req.params;
+      const { formId } = req.params;
       const { id: owner } = req.user;
 
-      if (!mongoose.Types.ObjectId.isValid(id)) throw { code: 400, message: 'INVALID_ID' };
+      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 400, message: 'FORM_NOT_FOUND' };
 
-      const form = await Form.findOneAndUpdate({ _id: id, owner }, req.body, { new: true });
+      const form = await Form.findOneAndUpdate({ _id: formId, owner }, req.body, { new: true });
       if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
 
       return res.json({
         status: 'success',
+        message: 'FORM_UPDATED',
         data: {
           form,
         },
@@ -123,12 +125,12 @@ class FormController {
 
   async deleteFormByIdAndUserId(req, res) {
     try {
-      const { id } = req.params;
+      const { formId } = req.params;
       const { id: owner } = req.user;
 
-      if (!mongoose.Types.ObjectId.isValid(id)) throw { code: 400, message: 'INVALID_ID' };
+      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 404, message: 'FORM_NOT_FOUND' };
 
-      const form = await Form.findOneAndDelete({ _id: id, owner });
+      const form = await Form.findOneAndDelete({ _id: formId, owner });
       if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
 
       return res.json({

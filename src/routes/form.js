@@ -7,8 +7,8 @@ const formController = new FormController();
 
 router.get('/forms', jwtAuth(), formController.getFormByUserId);
 router.post('/forms', jwtAuth(), formController.createNewForm);
-router.get('/forms/:id', jwtAuth(), formController.showFormByIdAndUserId);
-router.put('/forms/:id', jwtAuth(), formController.updateFormByIdAndUserId);
-router.delete('/forms/:id', jwtAuth(), formController.deleteFormByIdAndUserId);
+router.get('/forms/:formId', jwtAuth(), formController.showFormByIdAndUserId);
+router.put('/forms/:formId', jwtAuth(), formController.updateFormByIdAndUserId);
+router.delete('/forms/:formId', jwtAuth(), formController.deleteFormByIdAndUserId);
 
 export default router;
