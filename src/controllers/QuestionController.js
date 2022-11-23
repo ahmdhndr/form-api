@@ -35,7 +35,7 @@ class QuestionController {
       const { id: owner } = req.user;
       const { question, type, required } = req.body;
 
-      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 404, message: 'FORM_NOT_FOUND' };
+      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 400, message: 'INVALID_ID' };
 
       const newQuestion = {
         id: mongoose.Types.ObjectId(),
@@ -70,15 +70,14 @@ class QuestionController {
     }
   }
 
-  async updateQuestion(req, res) {
+  async updateQuestionById(req, res) {
     try {
       const { formId, questionId } = req.params;
       const { id: owner } = req.user;
       const { question, type, required } = req.body;
       const allowedTypes = ['text', 'radio', 'checkbox', 'dropdown', 'email'];
 
-      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 404, message: 'FORM_NOT_FOUND' };
-      if (!mongoose.Types.ObjectId.isValid(questionId)) throw { code: 404, message: 'QUESTION_NOT_FOUND' };
+      if (!mongoose.Types.ObjectId.isValid(formId) || !mongoose.Types.ObjectId.isValid(questionId)) throw { code: 400, message: 'INVALID_ID' };
 
       const field = {};
       if (req.body.hasOwnProperty('question')) {
@@ -119,13 +118,12 @@ class QuestionController {
     }
   }
 
-  async deleteQuestion(req, res) {
+  async deleteQuestionById(req, res) {
     try {
       const { formId, questionId } = req.params;
       const { id: owner } = req.user;
 
-      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 404, message: 'FORM_NOT_FOUND' };
-      if (!mongoose.Types.ObjectId.isValid(questionId)) throw { code: 404, message: 'QUESTION_NOT_FOUND' };
+      if (!mongoose.Types.ObjectId.isValid(formId) || !mongoose.Types.ObjectId.isValid(questionId)) throw { code: 400, message: 'INVALID_ID' };
 
       const form = await Form.findOneAndUpdate(
         { _id: formId, owner },

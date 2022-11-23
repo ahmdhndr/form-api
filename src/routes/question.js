@@ -7,8 +7,7 @@ const questionController = new QuestionController();
 
 router.get('/forms/:formId/questions', jwtAuth(), questionController.getQuestionByUserId);
 router.post('/forms/:formId/questions', jwtAuth(), questionController.addQuestion);
-// router.get('/forms/:id', jwtAuth(), questionController.showFormByIdAndUserId);
-router.put('/forms/:formId/questions/:questionId', jwtAuth(), questionController.updateQuestion);
-router.delete('/forms/:formId/questions/:questionId', jwtAuth(), questionController.deleteQuestion);
+router.put('/forms/:formId/questions/:questionId', jwtAuth(), questionController.updateQuestionById);
+router.delete('/forms/:formId/questions/:questionId', jwtAuth(), questionController.deleteQuestionById);
 
 export default router;

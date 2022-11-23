@@ -75,7 +75,7 @@ class FormController {
       const { formId } = req.params;
       const { id: owner } = req.user;
 
-      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 404, message: 'FORM_NOT_FOUND' };
+      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 400, message: 'INVALID_ID' };
 
       const form = await Form.findOne({ _id: formId, owner });
       if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
@@ -101,7 +101,7 @@ class FormController {
       const { formId } = req.params;
       const { id: owner } = req.user;
 
-      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 400, message: 'FORM_NOT_FOUND' };
+      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 400, message: 'INVALID_ID' };
 
       const form = await Form.findOneAndUpdate({ _id: formId, owner }, req.body, { new: true });
       if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
@@ -128,7 +128,7 @@ class FormController {
       const { formId } = req.params;
       const { id: owner } = req.user;
 
-      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 404, message: 'FORM_NOT_FOUND' };
+      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 400, message: 'INVALID_ID' };
 
       const form = await Form.findOneAndDelete({ _id: formId, owner });
       if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
