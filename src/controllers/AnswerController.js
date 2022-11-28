@@ -34,7 +34,7 @@ class AnswerController {
       if (checkAnswerQstId.length > 0) throw new InvariantError('QUESTION_ID_NOT_EXIST', { questionId: checkAnswerQstId[0].questionId });
 
       const isNotValidEmail = await checkEmailValidation(questions, answers);
-      if (isNotValidEmail.length > 0) throw new InvariantError('NOT_VALID_EMAIL', { question: isNotValidEmail[0].question });
+      if (isNotValidEmail.length > 0) throw new InvariantError('INVALID_EMAIL', { question: isNotValidEmail[0].question });
 
       if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 400, message: 'INVALID_ID' };
 
@@ -61,7 +61,7 @@ class AnswerController {
         .json({
           status: error.statusCode ? 'fail' : 'error',
           message: error.message || 'Terjadi kegagalan pada server',
-          part: error.part || null,
+          part: error.part || {},
         });
     }
   }

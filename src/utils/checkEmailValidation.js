@@ -5,7 +5,7 @@ const checkEmailValidation = async (questions, answers) => {
       if (question.required) {
         if (foundedAnswer) {
           const regex = /[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/;
-          if (regex.test(foundedAnswer.value) === false) {
+          if (!regex.test(foundedAnswer.value)) {
             return true;
           }
         }

@@ -4,11 +4,12 @@ import express from 'express';
 import connectDB from './configs/db.js';
 import { errorHandler, notFoundError } from './middlewares/errorMiddleware.js';
 
-import userRouter from './routes/user.js';
-import formRouter from './routes/form.js';
-import questionRouter from './routes/question.js';
-import optionRouter from './routes/option.js';
-import answerRouter from './routes/answer.js';
+import userRouter from './routes/users.js';
+import formRouter from './routes/forms.js';
+import questionRouter from './routes/questions.js';
+import optionRouter from './routes/options.js';
+import answerRouter from './routes/answers.js';
+import inviteRouter from './routes/invites.js';
 
 dotenv.config();
 const app = express();
@@ -27,6 +28,7 @@ app.use('/', formRouter);
 app.use('/', questionRouter);
 app.use('/', optionRouter);
 app.use('/', answerRouter);
+app.use('/', inviteRouter);
 
 /* Error middleware */
 app.use(notFoundError);

@@ -63,7 +63,7 @@ class AuthController {
       const accessToken = await tokenManager.generateAccessToken({ id: user._id, email });
       const refreshToken = await tokenManager.generateRefreshToken({ id: user._id, email });
 
-      return res.status(201).json({
+      return res.json({
         status: 'success',
         data: {
           accessToken,
