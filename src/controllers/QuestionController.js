@@ -3,6 +3,11 @@ import mongoose from 'mongoose';
 
 import Form from '../models/Form.js';
 
+import NotFoundError from '../exceptions/NotFoundError.js';
+import InvariantError from '../exceptions/InvariantError.js';
+
+const allowedTypes = ['text', 'radio', 'checkbox', 'dropdown', 'email'];
+
 class QuestionController {
   async getQuestionByUserId(req, res) {
     try {
@@ -10,7 +15,7 @@ class QuestionController {
       const { id: owner } = req.user;
 
       const form = await Form.findOne({ _id: formId, owner });
-      if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
+      if (!form) throw new NotFoundError('FORM_NOT_FOUND');
       const { questions } = form;
 
       return res.json({
@@ -21,9 +26,9 @@ class QuestionController {
       });
     } catch (error) {
       return res
-        .status(error.code || 500)
+        .status(error.statusCode || 500)
         .json({
-          status: error.code ? 'fail' : 'error',
+          status: error.statusCode ? 'fail' : 'error',
           message: error.message || 'Terjadi kegagalan pada server',
         });
     }
@@ -35,12 +40,13 @@ class QuestionController {
       const { id: owner } = req.user;
       const { question, type, required } = req.body;
 
-      if (!mongoose.Types.ObjectId.isValid(formId)) throw { code: 400, message: 'INVALID_ID' };
+      if (!mongoose.Types.ObjectId.isValid(formId)) throw new InvariantError('INVALID_ID');
+      if (!allowedTypes.includes(type)) throw new InvariantError('INVALID_QUESTION_TYPE');
 
       const newQuestion = {
         id: mongoose.Types.ObjectId(),
         question: question || null,
-        type: type || 'text', /* text, radio, checkbox, dropdown */
+        type: type || 'text',
         required: required || false,
         options: [],
       };
@@ -51,7 +57,7 @@ class QuestionController {
         { new: true },
       );
 
-      if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
+      if (!form) throw new NotFoundError('FORM_NOT_FOUND');
 
       return res.status(201).json({
         status: 'success',
@@ -62,9 +68,9 @@ class QuestionController {
       });
     } catch (error) {
       return res
-        .status(error.code || 500)
+        .status(error.statusCode || 500)
         .json({
-          status: error.code ? 'fail' : 'error',
+          status: error.statusCode ? 'fail' : 'error',
           message: error.message || 'Terjadi kegagalan pada server',
         });
     }
@@ -75,15 +81,14 @@ class QuestionController {
       const { formId, questionId } = req.params;
       const { id: owner } = req.user;
       const { question, type, required } = req.body;
-      const allowedTypes = ['text', 'radio', 'checkbox', 'dropdown', 'email'];
 
-      if (!mongoose.Types.ObjectId.isValid(formId) || !mongoose.Types.ObjectId.isValid(questionId)) throw { code: 400, message: 'INVALID_ID' };
+      if (!mongoose.Types.ObjectId.isValid(formId) || !mongoose.Types.ObjectId.isValid(questionId)) throw new InvariantError('INVALID_ID');
 
       const field = {};
       if (req.body.hasOwnProperty('question')) {
         field['questions.$[indexQuestion].question'] = question;
       } else if (req.body.hasOwnProperty('type')) {
-        if (!allowedTypes.includes(type)) throw { code: 400, message: 'INVALID_QUESTION_TYPE' };
+        if (!allowedTypes.includes(type)) throw new InvariantError('INVALID_QUESTION_TYPE');
         field['questions.$[indexQuestion].type'] = type;
       } else if (req.body.hasOwnProperty('required')) {
         field['questions.$[indexQuestion].required'] = required;
@@ -98,7 +103,7 @@ class QuestionController {
         },
       );
 
-      if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
+      if (!form) throw new NotFoundError('FORM_NOT_FOUND');
 
       return res.json({
         status: 'success',
@@ -108,11 +113,10 @@ class QuestionController {
         },
       });
     } catch (error) {
-      console.log(error);
       return res
-        .status(error.code || 500)
+        .status(error.statusCode || 500)
         .json({
-          status: error.code ? 'fail' : 'error',
+          status: error.statusCode ? 'fail' : 'error',
           message: error.message || 'Terjadi kegagalan pada server',
         });
     }
@@ -123,7 +127,7 @@ class QuestionController {
       const { formId, questionId } = req.params;
       const { id: owner } = req.user;
 
-      if (!mongoose.Types.ObjectId.isValid(formId) || !mongoose.Types.ObjectId.isValid(questionId)) throw { code: 400, message: 'INVALID_ID' };
+      if (!mongoose.Types.ObjectId.isValid(formId) || !mongoose.Types.ObjectId.isValid(questionId)) throw new InvariantError('INVALID_ID');
 
       const form = await Form.findOneAndUpdate(
         { _id: formId, owner },
@@ -131,7 +135,7 @@ class QuestionController {
         { new: true },
       );
 
-      if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
+      if (!form) throw new NotFoundError('FORM_NOT_FOUND');
 
       return res.json({
         status: 'success',
@@ -141,11 +145,10 @@ class QuestionController {
         },
       });
     } catch (error) {
-      console.log(error);
       return res
-        .status(error.code || 500)
+        .status(error.statusCode || 500)
         .json({
-          status: error.code ? 'fail' : 'error',
+          status: error.statusCode ? 'fail' : 'error',
           message: error.message || 'Terjadi kegagalan pada server',
         });
     }

@@ -1,6 +1,8 @@
+import NotFoundError from '../exceptions/NotFoundError.js';
+
 const notFoundError = (req, res, next) => {
-  const error = new Error('NOT_FOUND');
-  res.status(404);
+  const error = new NotFoundError('NOT_FOUND');
+  // res.status(404);
   next(error);
 };
 

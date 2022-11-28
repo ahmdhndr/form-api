@@ -1,4 +1,4 @@
-import tokenManager from '../utils/TokenManager.js';
+import tokenManager from '../utils/tokenManager.js';
 
 // eslint-disable-next-line consistent-return
 const jwtAuth = () => async (req, res, next) => {

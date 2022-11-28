@@ -1,24 +1,23 @@
 import bcrypt from 'bcrypt';
+
 import User from '../models/User.js';
-import tokenManager from '../utils/TokenManager.js';
+
+import InvariantError from '../exceptions/InvariantError.js';
+import AuthenticationError from '../exceptions/AuthenticationError.js';
+
+import tokenManager from '../utils/tokenManager.js';
 
 class AuthController {
   async register(req, res) {
     try {
       const { fullname, email, password } = req.body;
 
-      if (!fullname || !email || !password) {
-        throw { code: 400, message: 'PROPERTY_REQUIRED' };
-      }
+      if (!fullname || !email || !password) throw new InvariantError('PROPERTY_REQUIRED');
 
-      if (password.length < 6) {
-        throw { code: 400, message: 'PASSWORD_MINIMUM_6_CHARACTERS' };
-      }
+      if (password.length < 6) throw new InvariantError('PASSWORD_MINIMUM_6_CHARACTERS');
 
       const isEmailExist = await User.findOne({ email });
-      if (isEmailExist) {
-        throw { code: 409, message: 'EMAIL_ALREADY_EXIST' };
-      }
+      if (isEmailExist) throw new InvariantError('EMAIL_ALREADY_EXIST');
 
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
@@ -41,9 +40,9 @@ class AuthController {
       });
     } catch (error) {
       return res
-        .status(error.code || 500)
+        .status(error.statusCode || 500)
         .json({
-          status: error.code ? 'fail' : 'error',
+          status: error.statusCode ? 'fail' : 'error',
           message: error.message || 'Terjadi kegagalan pada server',
         });
     }
@@ -53,19 +52,13 @@ class AuthController {
     try {
       const { email, password } = req.body;
 
-      if (!email || !password) {
-        throw { code: 400, message: 'PROPERTY_REQUIRED' };
-      }
+      if (!email || !password) throw new InvariantError('PROPERTY_REQUIRED');
 
       const user = await User.findOne({ email });
-      if (!user) {
-        throw { code: 400, message: 'USER_NOT_FOUND' };
-      }
+      if (!user) throw new InvariantError('USER_NOT_FOUND');
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        throw { code: 401, message: 'INVALID_PASSWORD' };
-      }
+      if (!isPasswordValid) throw new AuthenticationError('INVALID_PASSWORD');
 
       const accessToken = await tokenManager.generateAccessToken({ id: user._id, email });
       const refreshToken = await tokenManager.generateRefreshToken({ id: user._id, email });
@@ -79,9 +72,9 @@ class AuthController {
       });
     } catch (error) {
       return res
-        .status(error.code || 500)
+        .status(error.statusCode || 500)
         .json({
-          status: error.code ? 'fail' : 'error',
+          status: error.statusCode ? 'fail' : 'error',
           message: error.message || 'Terjadi kegagalan pada server',
         });
     }
@@ -91,7 +84,7 @@ class AuthController {
     try {
       const { refreshToken } = req.body;
 
-      if (!refreshToken) throw { code: 400, message: 'PROPERTY_REQUIRED' };
+      if (!refreshToken) throw new InvariantError('PROPERTY_REQUIRED');
 
       const { id, email } = await tokenManager.verifyRefreshToken(refreshToken);
 
@@ -105,9 +98,9 @@ class AuthController {
       });
     } catch (error) {
       return res
-        .status(error.code || 500)
+        .status(error.statusCode || 500)
         .json({
-          status: error.code ? 'fail' : 'error',
+          status: error.statusCode ? 'fail' : 'error',
           message: error.message || 'Terjadi kegagalan pada server',
         });
     }

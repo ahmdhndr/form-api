@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 
 import Form from '../models/Form.js';
 
+import InvariantError from '../exceptions/InvariantError.js';
+import NotFoundError from '../exceptions/NotFoundError.js';
+
 class OptionController {
   async addOption(req, res) {
     try {
@@ -9,9 +12,9 @@ class OptionController {
       const { formId, questionId } = req.params;
       const { option } = req.body;
 
-      if (!mongoose.Types.ObjectId.isValid(formId) || !mongoose.Types.ObjectId.isValid(questionId)) throw { code: 400, message: 'INVALID_ID' };
+      if (!mongoose.Types.ObjectId.isValid(formId) || !mongoose.Types.ObjectId.isValid(questionId)) throw new InvariantError('INVALID_ID');
 
-      if (!option) throw { code: 400, message: 'PROPERTY_REQUIRED' };
+      if (!option) throw new InvariantError('PROPERTY_REQUIRED');
 
       const newOption = {
         id: mongoose.Types.ObjectId(),
@@ -27,7 +30,7 @@ class OptionController {
         },
       );
 
-      if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
+      if (!form) throw new NotFoundError('FORM_NOT_FOUND');
 
       return res.status(201).json({
         status: 'success',
@@ -38,9 +41,9 @@ class OptionController {
       });
     } catch (error) {
       return res
-        .status(error.code || 500)
+        .status(error.statusCode || 500)
         .json({
-          status: error.code ? 'fail' : 'error',
+          status: error.statusCode ? 'fail' : 'error',
           message: error.message || 'Terjadi kegagalan pada server',
         });
     }
@@ -55,9 +58,9 @@ class OptionController {
       if (!mongoose.Types.ObjectId.isValid(formId)
         || !mongoose.Types.ObjectId.isValid(questionId)
         || !mongoose.Types.ObjectId.isValid(optionId)
-      ) throw { code: 400, message: 'INVALID_ID' };
+      ) throw new InvariantError('INVALID_ID');
 
-      if (!option) throw { code: 400, message: 'PROPERTY_REQUIRED' };
+      if (!option) throw new InvariantError('PROPERTY_REQUIRED');
 
       const form = await Form.findOneAndUpdate(
         { _id: formId, owner },
@@ -71,7 +74,7 @@ class OptionController {
         },
       );
 
-      if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
+      if (!form) throw new NotFoundError('FORM_NOT_FOUND');
 
       return res.json({
         status: 'success',
@@ -85,9 +88,9 @@ class OptionController {
       });
     } catch (error) {
       return res
-        .status(error.code || 500)
+        .status(error.statusCode || 500)
         .json({
-          status: error.code ? 'fail' : 'error',
+          status: error.statusCode ? 'fail' : 'error',
           message: error.message || 'Terjadi kegagalan pada server',
         });
     }
@@ -98,12 +101,10 @@ class OptionController {
       const { id: owner } = req.user;
       const { formId, questionId, optionId } = req.params;
 
-      if (!optionId) throw { code: 404, message: 'QUESTION_NOT_FOUND' };
-
       if (!mongoose.Types.ObjectId.isValid(formId)
         || !mongoose.Types.ObjectId.isValid(questionId)
         || !mongoose.Types.ObjectId.isValid(optionId)
-      ) throw { code: 400, message: 'INVALID_ID' };
+      ) throw new InvariantError('INVALID_ID');
 
       const form = await Form.findOneAndUpdate(
         { _id: formId, owner },
@@ -116,7 +117,7 @@ class OptionController {
         },
       );
 
-      if (!form) throw { code: 404, message: 'FORM_NOT_FOUND' };
+      if (!form) throw new NotFoundError('FORM_NOT_FOUND');
 
       return res.json({
         status: 'success',
@@ -127,9 +128,9 @@ class OptionController {
       });
     } catch (error) {
       return res
-        .status(error.code || 500)
+        .status(error.statusCode || 500)
         .json({
-          status: error.code ? 'fail' : 'error',
+          status: error.statusCode ? 'fail' : 'error',
           message: error.message || 'Terjadi kegagalan pada server',
         });
     }

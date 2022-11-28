@@ -8,6 +8,7 @@ import userRouter from './routes/user.js';
 import formRouter from './routes/form.js';
 import questionRouter from './routes/question.js';
 import optionRouter from './routes/option.js';
+import answerRouter from './routes/answer.js';
 
 dotenv.config();
 const app = express();
@@ -25,6 +26,7 @@ app.use('/', userRouter);
 app.use('/', formRouter);
 app.use('/', questionRouter);
 app.use('/', optionRouter);
+app.use('/', answerRouter);
 
 /* Error middleware */
 app.use(notFoundError);

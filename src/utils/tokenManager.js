@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const TokenManager = {
+const tokenManager = {
   generateAccessToken: async (payload) => jwt.sign(
     payload,
     process.env.ACCESS_TOKEN_KEY,
@@ -16,7 +16,7 @@ const TokenManager = {
       const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_KEY);
       return decoded;
     } catch (error) {
-      // eslint-disable-next-line no-throw-literal
+      if (error.message === 'jwt expired') throw { code: 401, message: 'TOKEN_EXPIRED' };
       throw { code: 400, message: 'INVALID_REFRESH_TOKEN' };
     }
   },
@@ -25,10 +25,10 @@ const TokenManager = {
       const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_KEY);
       return decoded;
     } catch (error) {
-      // eslint-disable-next-line no-throw-literal
+      if (error.message === 'jwt expired') throw { code: 401, message: 'TOKEN_EXPIRED' };
       throw { code: 400, message: 'INVALID_ACCESS_TOKEN' };
     }
   },
 };
 
-export default TokenManager;
+export default tokenManager;
