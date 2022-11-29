@@ -11,6 +11,7 @@
   "author": "Eru",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "eslint": "^8.27.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
