@@ -10,6 +10,7 @@ import questionRouter from './routes/questions.js';
 import optionRouter from './routes/options.js';
 import answerRouter from './routes/answers.js';
 import inviteRouter from './routes/invites.js';
+import respondentRouter from './routes/respondents.js';
 
 dotenv.config();
 const app = express();
@@ -29,6 +30,7 @@ app.use('/', questionRouter);
 app.use('/', optionRouter);
 app.use('/', answerRouter);
 app.use('/', inviteRouter);
+app.use('/', respondentRouter);
 
 /* Error middleware */
 app.use(notFoundError);

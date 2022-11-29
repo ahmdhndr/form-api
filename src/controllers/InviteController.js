@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import Form from '../models/Form.js';
 import User from '../models/User.js';
 
+import isValidEmail from '../utils/isValidEmail.js';
+
 import NotFoundError from '../exceptions/NotFoundError.js';
 import InvariantError from '../exceptions/InvariantError.js';
 
@@ -33,9 +35,7 @@ class InviteController {
 
       if (!mongoose.Types.ObjectId.isValid(formId)) throw new InvariantError('INVALID_ID');
 
-      // email validation
-      const regex = /[a-z0-9]+@[a-z0-9]+\.[a-z]{2,3}/;
-      if (!regex.test(email)) throw new InvariantError('INVALID_EMAIL');
+      if (!isValidEmail(email)) throw new InvariantError('INVALID_EMAIL');
 
       // check if owner try to invite him/her self
       const user = await User.findOne({ email });

@@ -6,6 +6,7 @@ import InvariantError from '../exceptions/InvariantError.js';
 import AuthenticationError from '../exceptions/AuthenticationError.js';
 
 import tokenManager from '../utils/tokenManager.js';
+import isValidEmail from '../utils/isValidEmail.js';
 
 class AuthController {
   async register(req, res) {
@@ -13,6 +14,8 @@ class AuthController {
       const { fullname, email, password } = req.body;
 
       if (!fullname || !email || !password) throw new InvariantError('PROPERTY_REQUIRED');
+
+      if (!isValidEmail(email)) throw new InvariantError('INVALID_EMAIL');
 
       if (password.length < 6) throw new InvariantError('PASSWORD_MINIMUM_6_CHARACTERS');
 

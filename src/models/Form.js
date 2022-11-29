@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
+import Answer from './Answer.js';
 
 const Schema = new mongoose.Schema(
   {
@@ -40,5 +41,11 @@ const Schema = new mongoose.Schema(
 );
 
 Schema.plugin(mongoosePaginate);
+
+Schema.virtual('answers', {
+  ref: Answer,
+  localField: '_id',
+  foreignField: 'formId',
+});
 
 export default mongoose.model('Form', Schema);

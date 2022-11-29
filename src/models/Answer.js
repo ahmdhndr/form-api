@@ -7,8 +7,8 @@ const Schema = new mongoose.Schema(
       required: true,
     },
     formId: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      type: mongoose.Types.ObjectId,
+      ref: 'Form',
     },
     createdAt: {
       type: Number,
