@@ -14,7 +14,7 @@ class FormController {
 
       const customLabels = {
         totalDocs: 'itemCount',
-        docs: 'itemsList',
+        docs: 'items',
         limit: 'perPage',
         page: 'currentPage',
         nextPage: 'next',
@@ -59,11 +59,7 @@ class FormController {
         status: 'success',
         message: 'FORM_CREATED',
         data: {
-          addedForm: {
-            _id: newForm._id,
-            title: title || 'untitled form',
-            owner: req.user.email,
-          },
+          newForm,
         },
       });
     } catch (error) {

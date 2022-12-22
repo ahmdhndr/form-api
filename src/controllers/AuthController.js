@@ -63,8 +63,12 @@ class AuthController {
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) throw new AuthenticationError('INVALID_PASSWORD');
 
-      const accessToken = await tokenManager.generateAccessToken({ id: user._id, email });
-      const refreshToken = await tokenManager.generateRefreshToken({ id: user._id, email });
+      const accessToken = await tokenManager.generateAccessToken(
+        { id: user._id, email, fullname: user.fullname },
+      );
+      const refreshToken = await tokenManager.generateRefreshToken(
+        { id: user._id, email, fullname: user.fullname },
+      );
 
       return res.json({
         status: 'success',
@@ -99,6 +103,23 @@ class AuthController {
           accessToken,
         },
       });
+    } catch (error) {
+      return res
+        .status(error.statusCode || 500)
+        .json({
+          status: error.statusCode ? 'fail' : 'error',
+          message: error.message || 'Terjadi kegagalan pada server',
+        });
+    }
+  }
+
+  async getUserProfile(req, res) {
+    try {
+      const user = await User.findById({ _id: req.user.id }).select(['-password', '-__v']);
+
+      if (!user) throw new InvariantError('USER_NOT_FOUND');
+
+      return res.json(user);
     } catch (error) {
       return res
         .status(error.statusCode || 500)

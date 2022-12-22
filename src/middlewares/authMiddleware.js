@@ -1,9 +1,10 @@
+import AuthenticationError from '../exceptions/AuthenticationError.js';
 import tokenManager from '../utils/tokenManager.js';
 
 // eslint-disable-next-line consistent-return
 const jwtAuth = () => async (req, res, next) => {
   try {
-    if (!req.headers.authorization) throw { code: 401, message: 'UNAUTHORIZED' };
+    if (!req.headers.authorization) throw new AuthenticationError('UNAUTHORIZED');
     // eslint-disable-next-line prefer-destructuring
     const token = req.headers.authorization.split(' ')[1];
 

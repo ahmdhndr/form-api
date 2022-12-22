@@ -45,7 +45,7 @@ class QuestionController {
 
       const newQuestion = {
         id: mongoose.Types.ObjectId(),
-        question: question || null,
+        question: question || 'Untitled question',
         type: type || 'text',
         required: required || false,
         options: [],
