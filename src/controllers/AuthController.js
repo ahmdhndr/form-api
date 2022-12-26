@@ -119,7 +119,12 @@ class AuthController {
 
       if (!user) throw new InvariantError('USER_NOT_FOUND');
 
-      return res.json(user);
+      return res.json({
+        status: 'success',
+        data: {
+          user,
+        },
+      });
     } catch (error) {
       return res
         .status(error.statusCode || 500)

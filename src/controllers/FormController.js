@@ -79,8 +79,9 @@ class FormController {
 
       if (!mongoose.Types.ObjectId.isValid(formId)) throw new InvariantError('INVALID_ID');
 
-      const form = await Form.findOne({ _id: formId, owner });
+      const form = await Form.findById({ _id: formId });
       if (!form) throw new NotFoundError('FORM_NOT_FOUND');
+      if (form.owner.toString() !== owner) throw new AuthorizationError('FORBIDDEN_ACCESS');
 
       return res.json({
         status: 'success',

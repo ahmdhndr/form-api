@@ -26,13 +26,13 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to API v1' });
 });
-app.use('/', userRouter);
-app.use('/', formRouter);
-app.use('/', questionRouter);
-app.use('/', optionRouter);
-app.use('/', answerRouter);
-app.use('/', inviteRouter);
-app.use('/', respondentRouter);
+app.use('/api', userRouter);
+app.use('/api', formRouter);
+app.use('/api', questionRouter);
+app.use('/api', optionRouter);
+app.use('/api', answerRouter);
+app.use('/api', inviteRouter);
+app.use('/api', respondentRouter);
 
 /* Error middleware */
 app.use(notFoundError);
