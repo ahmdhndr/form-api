@@ -10,11 +10,11 @@ const Schema = new mongoose.Schema(
     },
     title: {
       type: String,
-      default: 'untitled form',
+      default: 'Untitled form',
     },
     description: {
       type: String,
-      default: null,
+      default: 'Form description',
     },
     questions: {
       type: Array,

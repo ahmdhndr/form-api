@@ -8,7 +8,7 @@ import AuthorizationError from '../exceptions/AuthorizationError.js';
 import NotFoundError from '../exceptions/NotFoundError.js';
 
 class FormController {
-  async getFormByUserId(req, res) {
+  async getForms(req, res) {
     try {
       const { id: owner } = req.user;
 
@@ -45,7 +45,7 @@ class FormController {
     }
   }
 
-  async createNewForm(req, res) {
+  async createForm(req, res) {
     try {
       const { id: owner } = req.user;
       const { title, description } = req.body;
@@ -53,6 +53,15 @@ class FormController {
         owner,
         title,
         description,
+        questions: [
+          {
+            id: mongoose.Types.ObjectId(),
+            qnValue: 'Untitled question',
+            type: 'text',
+            required: false,
+            options: [],
+          },
+        ],
       });
 
       return res.status(201).json({
@@ -72,7 +81,7 @@ class FormController {
     }
   }
 
-  async showFormByIdAndUserId(req, res) {
+  async getFormById(req, res) {
     try {
       const { formId } = req.params;
       const { id: owner } = req.user;
@@ -99,7 +108,7 @@ class FormController {
     }
   }
 
-  async updateFormByIdAndUserId(req, res) {
+  async updateFormById(req, res) {
     try {
       const { formId } = req.params;
       const { id: owner } = req.user;
@@ -107,6 +116,7 @@ class FormController {
       if (!mongoose.Types.ObjectId.isValid(formId)) throw new InvariantError('INVALID_ID');
 
       const form = await Form.findOneAndUpdate({ _id: formId, owner }, req.body, { new: true });
+      console.log(form);
       if (!form) throw new NotFoundError('FORM_NOT_FOUND');
 
       return res.json({
@@ -126,15 +136,18 @@ class FormController {
     }
   }
 
-  async deleteFormByIdAndUserId(req, res) {
+  async deleteFormById(req, res) {
     try {
       const { formId } = req.params;
       const { id: owner } = req.user;
 
       if (!mongoose.Types.ObjectId.isValid(formId)) throw new InvariantError('INVALID_ID');
 
-      const form = await Form.findOneAndDelete({ _id: formId, owner });
+      const form = await Form.findById({ _id: formId });
       if (!form) throw new NotFoundError('FORM_NOT_FOUND');
+      if (form.owner.toString() !== owner) throw new AuthorizationError('FORBIDDEN_ACCESS');
+
+      form.remove();
 
       return res.json({
         status: 'success',
@@ -162,7 +175,6 @@ class FormController {
       if (owner !== formOwnerIdToString && form.public === false) {
         const user = await User.findOne({ _id: owner });
         if (!form.invites.includes(user.email)) throw new AuthorizationError('USER_NOT_HAVE_ACCESS');
-        form.invites = [];
       }
 
       if (!form) throw new NotFoundError('FORM_NOT_FOUND');
@@ -170,7 +182,16 @@ class FormController {
       return res.json({
         status: 'success',
         data: {
-          form,
+          form: {
+            _id: form._id,
+            owner: form.owner,
+            title: form.title,
+            description: form.description,
+            questions: [],
+            public: true,
+            createdAt: 1672122637,
+            updatedAt: 1672133534,
+          },
         },
       });
     } catch (error) {

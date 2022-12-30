@@ -115,7 +115,7 @@ class AuthController {
 
   async getUserProfile(req, res) {
     try {
-      const user = await User.findById({ _id: req.user.id }).select(['-password', '-__v']);
+      const user = await User.findById({ _id: req.user.id }).select(['-password', '-__v', '-status', '-createdAt', '-updatedAt']);
 
       if (!user) throw new InvariantError('USER_NOT_FOUND');
 

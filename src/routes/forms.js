@@ -5,11 +5,11 @@ import jwtAuth from '../middlewares/authMiddleware.js';
 const router = express.Router();
 const formController = new FormController();
 
-router.get('/forms', jwtAuth(), formController.getFormByUserId);
-router.post('/forms', jwtAuth(), formController.createNewForm);
-router.get('/forms/:formId', jwtAuth(), formController.showFormByIdAndUserId);
-router.put('/forms/:formId', jwtAuth(), formController.updateFormByIdAndUserId);
-router.delete('/forms/:formId', jwtAuth(), formController.deleteFormByIdAndUserId);
+router.get('/forms', jwtAuth(), formController.getForms);
+router.post('/forms', jwtAuth(), formController.createForm);
+router.get('/forms/:formId', jwtAuth(), formController.getFormById);
+router.put('/forms/:formId', jwtAuth(), formController.updateFormById);
+router.delete('/forms/:formId', jwtAuth(), formController.deleteFormById);
 router.get('/forms/:formId/viewForm', jwtAuth(), formController.viewForm);
 
 export default router;

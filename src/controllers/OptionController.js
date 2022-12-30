@@ -10,15 +10,15 @@ class OptionController {
     try {
       const { id: owner } = req.user;
       const { formId, questionId } = req.params;
-      const { option } = req.body;
+      const { optValue } = req.body;
 
       if (!mongoose.Types.ObjectId.isValid(formId) || !mongoose.Types.ObjectId.isValid(questionId)) throw new InvariantError('INVALID_ID');
 
-      if (!option) throw new InvariantError('PROPERTY_REQUIRED');
+      if (!optValue) throw new InvariantError('PROPERTY_REQUIRED');
 
       const newOption = {
         id: mongoose.Types.ObjectId(),
-        value: option,
+        value: optValue,
       };
 
       const form = await Form.findOneAndUpdate(
@@ -53,18 +53,18 @@ class OptionController {
     try {
       const { id: owner } = req.user;
       const { formId, questionId, optionId } = req.params;
-      const { option } = req.body;
+      const { optValue } = req.body;
 
       if (!mongoose.Types.ObjectId.isValid(formId)
         || !mongoose.Types.ObjectId.isValid(questionId)
         || !mongoose.Types.ObjectId.isValid(optionId)
       ) throw new InvariantError('INVALID_ID');
 
-      if (!option) throw new InvariantError('PROPERTY_REQUIRED');
+      if (!optValue) throw new InvariantError('PROPERTY_REQUIRED');
 
       const form = await Form.findOneAndUpdate(
         { _id: formId, owner },
-        { $set: { 'questions.$[indexQuestion].options.$[indexOption].value': option } },
+        { $set: { 'questions.$[indexQuestion].options.$[indexOption].value': optValue } },
         {
           arrayFilters: [
             { 'indexQuestion.id': mongoose.Types.ObjectId(questionId) },
@@ -82,7 +82,7 @@ class OptionController {
         data: {
           updatedOption: {
             id: optionId,
-            value: option,
+            value: optValue,
           },
         },
       });
@@ -106,6 +106,8 @@ class OptionController {
         || !mongoose.Types.ObjectId.isValid(optionId)
       ) throw new InvariantError('INVALID_ID');
 
+      if (!optionId) throw new NotFoundError('OPTION_NOT_FOUND');
+
       const form = await Form.findOneAndUpdate(
         { _id: formId, owner },
         { $pull: { 'questions.$[indexQuestion].options': { id: mongoose.Types.ObjectId(optionId) } } },
@@ -122,9 +124,6 @@ class OptionController {
       return res.json({
         status: 'success',
         message: 'OPTION_DELETED',
-        data: {
-          form,
-        },
       });
     } catch (error) {
       return res

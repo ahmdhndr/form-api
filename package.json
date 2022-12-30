@@ -1,7 +1,7 @@
 {
-  "name": "wegodevform-be",
+  "name": "form-api",
   "version": "1.0.0",
-  "description": "REST API for wegodevform",
+  "description": "REST API for Form app",
   "main": "index.js",
   "type": "module",
   "scripts": {

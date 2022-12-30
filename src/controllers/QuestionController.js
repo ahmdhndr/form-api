@@ -38,14 +38,14 @@ class QuestionController {
     try {
       const { formId } = req.params;
       const { id: owner } = req.user;
-      const { question, type, required } = req.body;
+      const { qnValue, type, required } = req.body;
 
       if (!mongoose.Types.ObjectId.isValid(formId)) throw new InvariantError('INVALID_ID');
-      if (!allowedTypes.includes(type)) throw new InvariantError('INVALID_QUESTION_TYPE');
+      // if (!allowedTypes.includes(type)) throw new InvariantError('INVALID_QUESTION_TYPE');
 
       const newQuestion = {
         id: mongoose.Types.ObjectId(),
-        question: question || 'Untitled question',
+        qnValue: qnValue || 'Untitled question',
         type: type || 'text',
         required: required || false,
         options: [],
@@ -80,13 +80,13 @@ class QuestionController {
     try {
       const { formId, questionId } = req.params;
       const { id: owner } = req.user;
-      const { question, type, required } = req.body;
+      const { qnValue, type, required } = req.body;
 
       if (!mongoose.Types.ObjectId.isValid(formId) || !mongoose.Types.ObjectId.isValid(questionId)) throw new InvariantError('INVALID_ID');
 
       const field = {};
-      if (req.body.hasOwnProperty('question')) {
-        field['questions.$[indexQuestion].question'] = question;
+      if (req.body.hasOwnProperty('qnValue')) {
+        field['questions.$[indexQuestion].qnValue'] = qnValue;
       } else if (req.body.hasOwnProperty('type')) {
         if (!allowedTypes.includes(type)) throw new InvariantError('INVALID_QUESTION_TYPE');
         field['questions.$[indexQuestion].type'] = type;
@@ -104,12 +104,14 @@ class QuestionController {
       );
 
       if (!form) throw new NotFoundError('FORM_NOT_FOUND');
+      const updatedQuestion = form.questions
+        .find((question) => question.id.toString() === questionId.toString());
 
       return res.json({
         status: 'success',
         message: 'QUESTION_UPDATED',
         data: {
-          form,
+          updatedQuestion,
         },
       });
     } catch (error) {
@@ -140,9 +142,6 @@ class QuestionController {
       return res.json({
         status: 'success',
         message: 'QUESTION_DELETED',
-        data: {
-          form,
-        },
       });
     } catch (error) {
       return res
