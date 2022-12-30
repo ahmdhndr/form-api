@@ -21,7 +21,6 @@ npm install
 1. Create an .env file inside your root project directory
 
 ```bash
-.env
 # HTTP SERVER
 PORT=
 # MONGODB
@@ -370,12 +369,12 @@ For now, still using local endpoint. It should run on `http://localhost:3000/api
 **Update Question**
 
 - URL
-  - `/forms/:formId/questions/{questionId}`
+  - `/forms/:formId/questions/:questionId`
 - Method
   - `PUT`
 - Headers:
   - `Authorization: Bearer <accessToken>`
-- Request Body `<one properties at every request>`
+- Request Body `<one property at every request>`
   - `qnValue as string, or`
   - `type as string, or`
   - `required as boolean`
@@ -399,7 +398,7 @@ For now, still using local endpoint. It should run on `http://localhost:3000/api
 **Delete Question**
 
 - URL
-  - `/forms/:formId/questions/{questionId}`
+  - `/forms/:formId/questions/:questionId`
 - Method
   - `DELETE`
 - Headers:
@@ -417,7 +416,7 @@ For now, still using local endpoint. It should run on `http://localhost:3000/api
 **Add Option**
 
 - URL
-  - `/forms/:formId/questions/{questionId}/options`
+  - `/forms/:formId/questions/:questionId/options`
 - Method
   - `POST`
 - Headers:
@@ -442,7 +441,7 @@ For now, still using local endpoint. It should run on `http://localhost:3000/api
 **Update Option**
 
 - URL
-  - `/forms/:formId/questions/{questionId}/options`
+  - `/forms/:formId/questions/:questionId/options/:optionId`
 - Method
   - `PUT`
 - Headers:
@@ -467,7 +466,7 @@ For now, still using local endpoint. It should run on `http://localhost:3000/api
 **Delete Option**
 
 - URL
-  - `/forms/:formId/questions/{questionId}/options`
+  - `/forms/:formId/questions/:questionId/options/:optionId`
 - Method
   - `DELETE`
 - Headers:
@@ -488,15 +487,17 @@ For now, still using local endpoint. It should run on `http://localhost:3000/api
 **Add Answer**
 
 - URL
-  - `/answers/:formId/`
+  - `/answers/:formId`
 - Method
   - `POST`
 - Headers:
   - `Authorization: Bearer <accessToken>`
 - Request Body
   - `answers as array of object with questionId and value as property`
-  - > example answer for single value: `answers: [ { "questionId": "123", value: "some value" } ]`
-  - > example answer for multiple value like checkbox: `answers: [ { "questionId": "123", value: ["value 1", "value 2"] } ]`
+  - > example answer for single value:
+    > `answers: [ { "questionId": "123", value: "some value" } ]`
+  - > example answer for multiple value like checkbox:
+    > `answers: [ { "questionId": "123", value: ["value 1", "value 2"] } ]`
 - Response
   ```json
   {
